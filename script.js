@@ -1,374 +1,495 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Show loader for 1 second to simulate loading
-    setTimeout(function() {
-        document.querySelector('.loader-container').classList.add('hidden');
-    }, 1000);
-
-    // Login functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const loginScreen = document.getElementById('login-screen');
+    const mainAppScreen = document.getElementById('main-app');
     const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple validation
-            if (!username || !password) {
-                showAlert('Por favor, preencha todos os campos.', 'danger');
-                return;
-            }
-            
-            // Simulate login (in a real application, you would send a request to the server)
-            showLoader();
-            
-            // Simulate server response
-            setTimeout(function() {
-                hideLoader();
-                // Redirect to dashboard (in a real application, this would happen after successful authentication)
-                window.location.href = 'dashboard.html';
-            }, 1500);
+    const logoutBtn = document.getElementById('logout-btn');
+    const notificationArea = document.getElementById('notification-area');
+
+    const screens = document.querySelectorAll('.screen');
+    const contentSections = document.querySelectorAll('.main-content .content-section');
+    const navButtons = document.querySelectorAll('.sidebar .nav-btn');
+    const backButtons = document.querySelectorAll('.back-to-dashboard');
+
+    let demands = [
+        { id: 1, description: "Computador Lento Lab 101", priority: "Média", requestDate: "2024-07-14", dueDate: "", status: "Aberto", assignedTech: null, actions: "" },
+        { id: 2, description: "Impressora Bloco B não imprime", priority: "Alta", requestDate: "2024-07-15", dueDate: "2024-07-16", status: "Em Andamento", assignedTech: "Silva", actions: "Verificado toner e conexão. Aguardando peça." }
+    ];
+    let history = [
+        { id: 101, completedDate: "2024-07-12", tech: "João", originalDemandId: 0, description: "Troca de HD SSD no PC da Secretaria", status: "Concluído" }
+    ];
+    let stock = [
+        { id: 1, name: "Teclado USB ABNT2", quantity: 15, minQuantity: 5 },
+        { id: 2, name: "Mouse USB", quantity: 3, minQuantity: 5 },
+        { id: 3, name: "Cabo de Rede (Metro)", quantity: 50, minQuantity: 20 },
+        { id: 4, name: "Toner Impressora HP XYZ", quantity: 1, minQuantity: 2 }
+    ];
+    let environments = [
+        { id: 1, name: "Laboratório de Informática 1", location: "Bloco C, Sala 201", equipment: "15 PCs Dell, 1 Projetor", responsible: "Prof. Carlos" },
+        { id: 2, name: "Secretaria Acadêmica", location: "Bloco A, Térreo", equipment: "3 PCs, 2 Impressoras", responsible: "Maria Silva" }
+    ];
+    let nextDemandId = 3;
+    let nextHistoryId = 102;
+    let nextStockId = 5;
+    let nextEnvironmentId = 3;
+
+    let currentTechnician = "Admin";
+
+    function showScreen(screenToShowId) {
+        screens.forEach(screen => {
+            screen.classList.toggle('active', screen.id === screenToShowId);
+        });
+         if (screenToShowId === 'login-screen') {
+             mainAppScreen.classList.remove('active');
+         }
+    }
+
+    function showContentSection(sectionToShowId) {
+        contentSections.forEach(section => {
+            section.classList.toggle('active', section.id === sectionToShowId);
+        });
+        navButtons.forEach(button => {
+            button.classList.toggle('active-nav', button.dataset.target === sectionToShowId);
+        });
+        if (sectionToShowId !== 'demand-list-screen') {
+             document.getElementById('demand-details-section').style.display = 'none';
+        }
+    }
+
+    function renderDemandsTable() {
+        const tableBody = document.getElementById('demand-list-table-body');
+        const openDemandsList = document.getElementById('dashboard-open-demands');
+        tableBody.innerHTML = '';
+        openDemandsList.innerHTML = '';
+        let openCount = 0;
+        let progressCount = 0;
+        let completedCount = 0;
+
+        const openOrProgressDemands = demands.filter(d => d.status === 'Aberto' || d.status === 'Em Andamento');
+
+        if (openOrProgressDemands.length === 0) {
+             openDemandsList.innerHTML = '<li>Nenhum chamado ativo.</li>';
+        } else {
+             openOrProgressDemands.forEach(demand => {
+                 const li = document.createElement('li');
+                 li.innerHTML = `#${demand.id}: ${demand.description.substring(0, 30)}... (${demand.status})`;
+                 openDemandsList.appendChild(li);
+             });
+        }
+
+        demands.forEach(demand => {
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${demand.id}</td>
+                <td>${demand.description}</td>
+                <td><span class="priority-${demand.priority.toLowerCase()}">${demand.priority}</span></td>
+                <td>${formatDate(demand.requestDate)}</td>
+                <td><span class="status-${demand.status.toLowerCase().replace(' ', '-')}">${demand.status}</span></td>
+                <td class="action-buttons">
+                    <button class="btn btn-sm btn-secondary view-demand-btn" data-id="${demand.id}">Ver/Atender</button>
+                    ${demand.status === 'Aberto' ? `<button class="btn btn-sm btn-danger delete-demand-btn" data-id="${demand.id}">Excluir</button>` : ''}
+                </td>
+            `;
+            if (demand.status === 'Aberto') openCount++;
+            else if (demand.status === 'Em Andamento') progressCount++;
+            else if (demand.status === 'Concluído') completedCount++;
+        });
+
+        document.getElementById('dashboard-demand-status').textContent = `Abertos: ${openCount} | Em Andamento: ${progressCount} | Concluídos: ${completedCount}`;
+    }
+
+    function renderHistoryTable() {
+        const tableBody = document.getElementById('history-table-body');
+        tableBody.innerHTML = '';
+         const sortedHistory = [...history].sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));
+
+        sortedHistory.forEach(record => {
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${formatDate(record.completedDate)}</td>
+                <td>${record.tech}</td>
+                <td>${record.originalDemandId || 'N/A'}</td>
+                <td>${record.description}</td>
+                <td><span class="status-concluído">${record.status}</span></td>
+            `;
+        });
+
+        const recentActivitiesList = document.getElementById('dashboard-recent-activities');
+        recentActivitiesList.innerHTML = '';
+        sortedHistory.slice(0, 3).forEach(record => {
+            const li = document.createElement('li');
+            li.textContent = `${formatDate(record.completedDate)} - ${record.tech}: ${record.description.substring(0, 40)}...`;
+            recentActivitiesList.appendChild(li);
+        });
+        if (sortedHistory.length === 0) {
+            recentActivitiesList.innerHTML = '<li>Nenhuma atividade registrada.</li>';
+        }
+    }
+
+    function renderStockTable() {
+        const tableBody = document.getElementById('stock-table-body');
+        tableBody.innerHTML = '';
+        let criticalItems = [];
+
+        stock.forEach(item => {
+            const isLow = item.quantity < item.minQuantity;
+            if (isLow) criticalItems.push(`${item.name} (${item.quantity})`);
+
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${item.name} ${isLow ? '<span class="warning">(Baixo!)</span>' : ''}</td>
+                <td>${item.quantity}</td>
+                <td>${item.minQuantity}</td>
+                <td class="action-buttons">
+                     <button class="btn btn-sm stock-action-btn" data-id="${item.id}" data-action="add">Entrada</button>
+                     <button class="btn btn-sm stock-action-btn" data-id="${item.id}" data-action="remove" ${item.quantity <= 0 ? 'disabled' : ''}>Saída</button>
+                     <button class="btn btn-sm btn-danger delete-stock-btn" data-id="${item.id}">Excluir</button>
+                </td>
+            `;
+        });
+
+        const alertsList = document.getElementById('dashboard-alerts');
+        alertsList.innerHTML = '';
+        criticalItems.forEach(alertText => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="warning">Estoque Baixo: ${alertText}</span>`;
+            alertsList.appendChild(li);
+        });
+         if(alertsList.innerHTML === '') {
+              alertsList.innerHTML = '<li>Nenhum alerta no momento.</li>';
+         }
+    }
+
+    function renderEnvironmentsTable() {
+        const tableBody = document.getElementById('environments-table-body');
+        tableBody.innerHTML = '';
+        environments.forEach(env => {
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${env.name}</td>
+                <td>${env.location}</td>
+                <td>${env.responsible}</td>
+                <td class="action-buttons">
+                    <button class="btn btn-sm edit-env-btn" data-id="${env.id}">Editar</button>
+                    <button class="btn btn-sm btn-danger delete-env-btn" data-id="${env.id}">Excluir</button>
+                </td>
+            `;
         });
     }
 
-    // Password toggle functionality
-    const passwordToggles = document.querySelectorAll('.password-toggle');
-    passwordToggles.forEach(toggle => {
-        toggle.addEventListener('click', function() {
-            const passwordField = this.previousElementSibling;
-            const type = passwordField.getAttribute('type');
-            if (type === 'password') {
-                passwordField.setAttribute('type', 'text');
-                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
-            } else {
-                passwordField.setAttribute('type', 'password');
-                this.innerHTML = '<i class="fas fa-eye"></i>';
+    function showNotification(message, duration = 3000) {
+        notificationArea.textContent = message;
+        notificationArea.classList.add('show');
+        setTimeout(() => {
+            notificationArea.classList.remove('show');
+        }, duration);
+    }
+
+     function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString + 'T00:00:00');
+        return date.toLocaleDateString('pt-BR');
+    }
+
+    function getTodayDateString() {
+         return new Date().toISOString().split('T')[0];
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            console.log('Login com:', username);
+            currentTechnician = username;
+            showScreen('main-app');
+            showContentSection('dashboard-screen');
+            renderAllTables();
+            showNotification(`Bem-vindo, ${currentTechnician}!`);
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            console.log('Logout...');
+            showScreen('login-screen');
+        });
+    }
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetSectionId = button.dataset.target;
+            if (targetSectionId) {
+                showContentSection(targetSectionId);
+            }
+        });
+    });
+    backButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetSectionId = button.dataset.target;
+             if (targetSectionId) {
+                showContentSection(targetSectionId);
             }
         });
     });
 
-    // Sidebar menu activation
-    const menuItems = document.querySelectorAll('.menu li');
-    menuItems.forEach(item => {
-        item.addEventListener('click', function() {
-            // Remove active class from all menu items
-            menuItems.forEach(menu => menu.classList.remove('active'));
-            // Add active class to clicked item
-            this.classList.add('active');
-            
-            // Handle submenu if exists
-            const submenu = this.querySelector('.submenu');
-            if (submenu) {
-                if (submenu.style.display === 'block') {
-                    submenu.style.display = 'none';
-                } else {
-                    // Hide all other submenus
-                    document.querySelectorAll('.submenu').forEach(sub => {
-                        sub.style.display = 'none';
-                    });
-                    submenu.style.display = 'block';
+    const demandForm = document.getElementById('demand-form');
+    if (demandForm) {
+        document.getElementById('demand-date').value = getTodayDateString();
+
+        demandForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newDemand = {
+                id: nextDemandId++,
+                description: document.getElementById('demand-description').value,
+                priority: document.getElementById('demand-priority').value,
+                requestDate: document.getElementById('demand-date').value,
+                dueDate: document.getElementById('demand-due-date').value || null,
+                status: "Aberto",
+                assignedTech: null,
+                actions: ""
+            };
+            demands.push(newDemand);
+            renderDemandsTable();
+            demandForm.reset();
+            document.getElementById('demand-date').value = getTodayDateString();
+            showNotification("Demanda registrada com sucesso!");
+            showContentSection('demand-list-screen');
+        });
+    }
+
+     const demandListTable = document.getElementById('demand-list-table-body');
+     const demandDetailsSection = document.getElementById('demand-details-section');
+     let selectedDemandId = null;
+
+     if (demandListTable) {
+         demandListTable.addEventListener('click', (e) => {
+             if (e.target.classList.contains('view-demand-btn')) {
+                 selectedDemandId = parseInt(e.target.dataset.id);
+                 const demand = demands.find(d => d.id === selectedDemandId);
+                 if (demand) {
+                     document.getElementById('details-demand-id').textContent = demand.id;
+                     document.getElementById('details-demand-description').textContent = demand.description;
+                     document.getElementById('details-demand-priority').textContent = demand.priority;
+                     document.getElementById('details-demand-status').textContent = demand.status;
+                     document.getElementById('demand-actions-performed').value = demand.actions || '';
+
+                     const completeBtn = document.getElementById('complete-demand-btn');
+                     const startBtn = document.getElementById('start-demand-btn');
+                     const actionsTextarea = document.getElementById('demand-actions-performed');
+
+                     if (demand.status === 'Concluído') {
+                         completeBtn.style.display = 'none';
+                         startBtn.style.display = 'none';
+                         actionsTextarea.readOnly = true;
+                     } else if (demand.status === 'Em Andamento') {
+                         completeBtn.style.display = 'inline-block';
+                         startBtn.style.display = 'none';
+                         actionsTextarea.readOnly = false;
+                     } else {
+                         completeBtn.style.display = 'none';
+                         startBtn.style.display = 'inline-block';
+                         actionsTextarea.readOnly = true;
+                     }
+
+                     demandDetailsSection.style.display = 'block';
+                 }
+             } else if (e.target.classList.contains('delete-demand-btn')) {
+                  const demandIdToDelete = parseInt(e.target.dataset.id);
+                   if (confirm(`Tem certeza que deseja excluir a Demanda #${demandIdToDelete}?`)) {
+                        demands = demands.filter(d => d.id !== demandIdToDelete);
+                        renderDemandsTable();
+                        demandDetailsSection.style.display = 'none';
+                        showNotification(`Demanda #${demandIdToDelete} excluída.`);
+                   }
+             }
+         });
+     }
+
+     const startDemandBtn = document.getElementById('start-demand-btn');
+     if(startDemandBtn) {
+         startDemandBtn.addEventListener('click', () => {
+             if (selectedDemandId) {
+                 const demandIndex = demands.findIndex(d => d.id === selectedDemandId);
+                 if (demandIndex > -1 && demands[demandIndex].status === 'Aberto') {
+                     demands[demandIndex].status = 'Em Andamento';
+                     demands[demandIndex].assignedTech = currentTechnician;
+                     renderDemandsTable();
+                     document.getElementById('details-demand-status').textContent = 'Em Andamento';
+                     document.getElementById('start-demand-btn').style.display = 'none';
+                      document.getElementById('complete-demand-btn').style.display = 'inline-block';
+                     document.getElementById('demand-actions-performed').readOnly = false;
+                     showNotification(`Atendimento da Demanda #${selectedDemandId} iniciado.`);
+                 }
+             }
+         });
+     }
+
+    const completeDemandBtn = document.getElementById('complete-demand-btn');
+    if (completeDemandBtn) {
+        completeDemandBtn.addEventListener('click', () => {
+            if (selectedDemandId) {
+                const actions = document.getElementById('demand-actions-performed').value.trim();
+                 if (!actions) {
+                    alert("Por favor, descreva as ações realizadas para concluir a demanda.");
+                    return;
+                 }
+
+                const demandIndex = demands.findIndex(d => d.id === selectedDemandId);
+                if (demandIndex > -1 && demands[demandIndex].status === 'Em Andamento') {
+                    demands[demandIndex].status = 'Concluído';
+                    demands[demandIndex].actions = actions;
+
+                    const historyRecord = {
+                        id: nextHistoryId++,
+                        completedDate: getTodayDateString(),
+                        tech: demands[demandIndex].assignedTech || currentTechnician,
+                        originalDemandId: demands[demandIndex].id,
+                        description: actions,
+                        status: "Concluído"
+                    };
+                    history.push(historyRecord);
+
+                    renderDemandsTable();
+                    renderHistoryTable();
+                    demandDetailsSection.style.display = 'none';
+                    showNotification(`Demanda #${selectedDemandId} concluída e registrada no histórico.`);
                 }
             }
         });
-    });
-
-    // Dashboard widgets initialization
-    initializeCharts();
-    initializeDataTables();
-    setupNotifications();
-    
-    // Form validation
-    const forms = document.querySelectorAll('form:not(#login-form)');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            if (!validateForm(this)) {
-                e.preventDefault();
-                showAlert('Por favor, corrija os erros no formulário.', 'warning');
-            }
-        });
-    });
-
-    // Modal functionality
-    setupModals();
-    
-    // Search functionality
-    setupSearch();
-});
-
-// Helper functions
-function showLoader() {
-    document.querySelector('.loader-container').classList.remove('hidden');
-}
-
-function hideLoader() {
-    document.querySelector('.loader-container').classList.add('hidden');
-}
-
-function showAlert(message, type) {
-    const alertContainer = document.querySelector('.alert-container') || createAlertContainer();
-    
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type}`;
-    alert.innerHTML = `
-        <span class="close-alert"><i class="fas fa-times"></i></span>
-        <p>${message}</p>
-    `;
-    
-    alertContainer.appendChild(alert);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        alert.classList.add('fade-out');
-        setTimeout(() => alert.remove(), 500);
-    }, 5000);
-    
-    // Close button functionality
-    alert.querySelector('.close-alert').addEventListener('click', function() {
-        alert.classList.add('fade-out');
-        setTimeout(() => alert.remove(), 500);
-    });
-}
-
-function createAlertContainer() {
-    const container = document.createElement('div');
-    container.className = 'alert-container';
-    document.body.appendChild(container);
-    return container;
-}
-
-function validateForm(form) {
-    let isValid = true;
-    
-    // Clear previous error messages
-    form.querySelectorAll('.error-message').forEach(error => error.remove());
-    form.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
-    
-    // Check required fields
-    form.querySelectorAll('[required]').forEach(field => {
-        if (!field.value.trim()) {
-            markFieldAsError(field, 'Este campo é obrigatório');
-            isValid = false;
-        }
-    });
-    
-    // Check email fields
-    form.querySelectorAll('input[type="email"]').forEach(field => {
-        if (field.value && !validateEmail(field.value)) {
-            markFieldAsError(field, 'Por favor, insira um e-mail válido');
-            isValid = false;
-        }
-    });
-    
-    // Check password fields
-    const passwordFields = form.querySelectorAll('input[type="password"]');
-    if (passwordFields.length > 1) {
-        const password = passwordFields[0].value;
-        const confirmPassword = passwordFields[1].value;
-        
-        if (password && confirmPassword && password !== confirmPassword) {
-            markFieldAsError(passwordFields[1], 'As senhas não coincidem');
-            isValid = false;
-        }
     }
-    
-    return isValid;
-}
 
-function markFieldAsError(field, message) {
-    field.classList.add('error');
-    
-    const errorMessage = document.createElement('div');
-    errorMessage.className = 'error-message';
-    errorMessage.textContent = message;
-    
-    field.parentNode.appendChild(errorMessage);
-}
-
-function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function initializeCharts() {
-    // Check if Chart.js is loaded and charts container exists
-    if (typeof Chart === 'undefined' || !document.getElementById('charts-container')) return;
-    
-    // Sample data for charts
-    const ctx1 = document.getElementById('usersChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-            datasets: [{
-                label: 'Novos Usuários',
-                data: [65, 59, 80, 81, 56, 55],
-                borderColor: '#4361ee',
-                backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-    
-    const ctx2 = document.getElementById('revenueChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-            datasets: [{
-                label: 'Receita (R$)',
-                data: [12500, 19000, 15000, 25000, 22000, 30000],
-                backgroundColor: '#4cc9f0'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-}
-
-function initializeDataTables() {
-    // Check if DataTable is loaded
-    if (typeof $.fn.DataTable === 'undefined') return;
-    
-    $('.data-table').DataTable({
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese-Brasil.json'
-        },
-        responsive: true,
-        pageLength: 10
-    });
-}
-
-function setupNotifications() {
-    const notificationBell = document.querySelector('.notification-bell');
-    if (!notificationBell) return;
-    
-    notificationBell.addEventListener('click', function(e) {
-        e.preventDefault();
-        const dropdown = document.querySelector('.notification-dropdown');
-        dropdown.classList.toggle('show');
-        
-        // Mark as read when opened
-        if (dropdown.classList.contains('show')) {
-            notificationBell.querySelector('.notification-count').textContent = '0';
-            notificationBell.querySelector('.notification-indicator').classList.add('hidden');
-            
-            // Mark all notifications as read
-            dropdown.querySelectorAll('.notification-item.unread').forEach(item => {
-                item.classList.remove('unread');
-            });
-        }
-    });
-    
-    // Close notification dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.notification-bell') && !e.target.closest('.notification-dropdown')) {
-            document.querySelector('.notification-dropdown')?.classList.remove('show');
-        }
-    });
-}
-
-function setupModals() {
-    // Modal triggers
-    document.querySelectorAll('[data-modal]').forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
+    const addStockForm = document.getElementById('add-stock-item-form');
+    if (addStockForm) {
+        addStockForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const modalId = this.getAttribute('data-modal');
-            const modal = document.getElementById(modalId);
-            
-            if (modal) {
-                modal.classList.add('active');
-                document.body.classList.add('modal-open');
-            }
+            const newItem = {
+                id: nextStockId++,
+                name: document.getElementById('stock-item-name').value,
+                quantity: parseInt(document.getElementById('stock-item-qty').value) || 0,
+                minQuantity: parseInt(document.getElementById('stock-item-min-qty').value) || 0
+            };
+            stock.push(newItem);
+            renderStockTable();
+            addStockForm.reset();
+            showNotification(`Item "${newItem.name}" adicionado ao estoque.`);
         });
-    });
-    
-    // Close modal buttons
-    document.querySelectorAll('.modal-close, .modal-cancel').forEach(button => {
-        button.addEventListener('click', function() {
-            const modal = this.closest('.modal');
-            modal.classList.remove('active');
-            document.body.classList.remove('modal-open');
-        });
-    });
-    
-    // Click outside to close
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            }
-        });
-    });
-}
-
-function setupSearch() {
-    const searchInput = document.querySelector('.search-input');
-    if (!searchInput) return;
-    
-    searchInput.addEventListener('focus', function() {
-        this.parentElement.classList.add('focused');
-    });
-    
-    searchInput.addEventListener('blur', function() {
-        this.parentElement.classList.remove('focused');
-    });
-    
-    // Live search functionality
-    searchInput.addEventListener('input', function() {
-        const query = this.value.toLowerCase();
-        
-        if (query.length < 2) {
-            document.querySelector('.search-results').classList.remove('show');
-            return;
-        }
-        
-        // Here you would typically make an AJAX request to a search endpoint
-        // For demo purposes, we'll just show some static results
-        showSearchResults(query);
-    });
-}
-
-function showSearchResults(query) {
-    const resultsContainer = document.querySelector('.search-results');
-    
-    // Simulate search results
-    if (query.length >= 2) {
-        resultsContainer.innerHTML = `
-            <div class="search-result-item">
-                <a href="user-profile.html?id=1">
-                    <div class="avatar small">JD</div>
-                    <div class="result-details">
-                        <h4>João da Silva</h4>
-                        <p>Usuário Premium</p>
-                    </div>
-                </a>
-            </div>
-            <div class="search-result-item">
-                <a href="product-details.html?id=42">
-                    <div class="result-icon"><i class="fas fa-box"></i></div>
-                    <div class="result-details">
-                        <h4>Produto Premium</h4>
-                        <p>Categoria: Software</p>
-                    </div>
-                </a>
-            </div>
-            <div class="search-result-item">
-                <a href="help.html?topic=payment">
-                    <div class="result-icon"><i class="fas fa-question-circle"></i></div>
-                    <div class="result-details">
-                        <h4>Ajuda com Pagamentos</h4>
-                        <p>Artigo de Suporte</p>
-                    </div>
-                </a>
-            </div>
-        `;
-        resultsContainer.classList.add('show');
-    } else {
-        resultsContainer.classList.remove('show');
     }
-}
+
+     const stockTableBody = document.getElementById('stock-table-body');
+     if (stockTableBody) {
+         stockTableBody.addEventListener('click', (e) => {
+             const target = e.target;
+             const itemId = parseInt(target.dataset.id);
+             const itemIndex = stock.findIndex(item => item.id === itemId);
+
+             if (itemIndex === -1) return;
+
+             if (target.classList.contains('stock-action-btn')) {
+                 const action = target.dataset.action;
+                 let quantityChange = 0;
+                  if(action === 'add') {
+                      quantityChange = parseInt(prompt(`Quantidade a adicionar para "${stock[itemIndex].name}":`, "1")) || 0;
+                      if (quantityChange > 0) {
+                         stock[itemIndex].quantity += quantityChange;
+                         showNotification(`${quantityChange} unidade(s) de "${stock[itemIndex].name}" adicionada(s).`);
+                      }
+                  } else if (action === 'remove') {
+                     quantityChange = parseInt(prompt(`Quantidade a remover de "${stock[itemIndex].name}" (máx: ${stock[itemIndex].quantity}):`, "1")) || 0;
+                      if (quantityChange > 0 && quantityChange <= stock[itemIndex].quantity) {
+                          stock[itemIndex].quantity -= quantityChange;
+                          showNotification(`${quantityChange} unidade(s) de "${stock[itemIndex].name}" removida(s).`);
+                      } else if (quantityChange > stock[itemIndex].quantity) {
+                          alert("Quantidade a remover maior que o estoque atual!");
+                      }
+                  }
+                 if (quantityChange !== 0) renderStockTable();
+
+             } else if (target.classList.contains('delete-stock-btn')) {
+                 if (confirm(`Tem certeza que deseja excluir o item "${stock[itemIndex].name}" do estoque?`)) {
+                     const deletedItemName = stock[itemIndex].name;
+                     stock.splice(itemIndex, 1);
+                     renderStockTable();
+                     showNotification(`Item "${deletedItemName}" excluído.`);
+                 }
+             }
+         });
+     }
+
+    const environmentForm = document.getElementById('environment-form');
+    const cancelEditEnvBtn = document.getElementById('cancel-edit-env-btn');
+    if (environmentForm) {
+        environmentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editId = parseInt(document.getElementById('env-edit-id').value);
+            const envData = {
+                name: document.getElementById('env-name').value,
+                location: document.getElementById('env-location').value,
+                equipment: document.getElementById('env-equipment').value,
+                responsible: document.getElementById('env-responsible').value
+            };
+
+            if (editId) {
+                const index = environments.findIndex(env => env.id === editId);
+                if (index > -1) {
+                    environments[index] = { ...environments[index], ...envData };
+                    showNotification(`Ambiente "${envData.name}" atualizado.`);
+                }
+            } else {
+                envData.id = nextEnvironmentId++;
+                environments.push(envData);
+                showNotification(`Ambiente "${envData.name}" adicionado.`);
+            }
+
+            renderEnvironmentsTable();
+            environmentForm.reset();
+            document.getElementById('env-edit-id').value = '';
+            cancelEditEnvBtn.style.display = 'none';
+        });
+    }
+
+     if(cancelEditEnvBtn) {
+         cancelEditEnvBtn.addEventListener('click', () => {
+             environmentForm.reset();
+             document.getElementById('env-edit-id').value = '';
+             cancelEditEnvBtn.style.display = 'none';
+         });
+     }
+
+     const environmentsTableBody = document.getElementById('environments-table-body');
+     if (environmentsTableBody) {
+         environmentsTableBody.addEventListener('click', (e) => {
+              const target = e.target;
+             const envId = parseInt(target.dataset.id);
+             const envIndex = environments.findIndex(env => env.id === envId);
+
+             if (envIndex === -1) return;
+
+             if (target.classList.contains('edit-env-btn')) {
+                 const env = environments[envIndex];
+                 document.getElementById('env-edit-id').value = env.id;
+                 document.getElementById('env-name').value = env.name;
+                 document.getElementById('env-location').value = env.location;
+                 document.getElementById('env-equipment').value = env.equipment;
+                 document.getElementById('env-responsible').value = env.responsible;
+                 cancelEditEnvBtn.style.display = 'inline-block';
+                 environmentForm.scrollIntoView({ behavior: 'smooth' });
+             } else if (target.classList.contains('delete-env-btn')) {
+                 if (confirm(`Tem certeza que deseja excluir o ambiente "${environments[envIndex].name}"?`)) {
+                     const deletedEnvName = environments[envIndex].name;
+                     environments.splice(envIndex, 1);
+                     renderEnvironmentsTable();
+                     showNotification(`Ambiente "${deletedEnvName}" excluído.`);
+                 }
+             }
+         });
+     }
+
+     function renderAllTables() {
+         renderDemandsTable();
+         renderHistoryTable();
+         renderStockTable();
+         renderEnvironmentsTable();
+     }
+
+     console.log("Sistema pronto.");
+
+});

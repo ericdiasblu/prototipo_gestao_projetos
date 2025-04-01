@@ -1,976 +1,292 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Integrado SENAI Blumenau</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Integrada SENAI V2</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Loader -->
-  <div class="loader-container">
-    <div class="loader"></div>
-    <p>Carregando Sistema SENAI</p>
-  </div>
+    <div id="app-container">
 
-  <!-- Tela de Login -->
-  <div id="loginScreen" class="login-container">
-    <div class="login-logo">
-      <img src="https://logodownload.org/wp-content/uploads/2019/08/senai-logo-1.png" alt="Logo SENAI">
-    </div>
-    <h2>Sistema Integrado</h2>
-    <div class="login-form">
-      <div class="form-group">
-        <label for="username"><i class="fas fa-user"></i> Usuário</label>
-        <input type="text" id="username" placeholder="Digite seu usuário">
-      </div>
-      <div class="form-group">
-        <label for="password"><i class="fas fa-lock"></i> Senha</label>
-        <input type="password" id="password" placeholder="Digite sua senha">
-        <span class="password-toggle" id="togglePassword"><i class="fas fa-eye"></i></span>
-      </div>
-      <button id="loginBtn" class="btn-primary">Entrar <i class="fas fa-sign-in-alt"></i></button>
-      <div class="login-footer">
-        <a href="#" class="forgot-password">Esqueci minha senha</a>
-      </div>
-    </div>
-  </div>
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <h2>
+                    <span class="logo-placeholder">SENAI Blumenau</span>
+                    <br> Plataforma Integrada
+                </h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Usuário/E-mail:</label>
+                        <input type="text" id="username" name="username" value="admin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Senha:</label>
+                        <input type="password" id="password" name="password" value="password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Entrar</button>
+                        <a href="#" class="forgot-password">Esqueci minha senha</a>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-  <!-- Dashboard -->
-  <div id="dashboard" class="dashboard hidden">
-    <!-- Header -->
-    <header class="top-header">
-      <div class="menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
-      </div>
-      <div class="logo">
-        <img src="https://logodownload.org/wp-content/uploads/2019/08/senai-logo-1.png" alt="Logo SENAI">
-        <span>SENAI Blumenau</span>
-      </div>
-      <div class="user-info">
-        <div class="notifications">
-          <i class="fas fa-bell"></i>
-          <span class="badge">3</span>
-        </div>
-        <div class="user-profile">
-          <img src="/api/placeholder/40/40" alt="Foto do usuário">
-          <span>Olá, <strong id="userName">Usuário</strong></span>
-        </div>
-      </div>
-    </header>
+        <div id="main-app" class="screen">
+            <nav class="sidebar">
+                 <h3>Menu</h3>
+                 <ul>
+                     <li><button class="nav-btn" data-target="dashboard-screen"> <i class="icon">📊</i> Dashboard</button></li>
+                     <li><button class="nav-btn" data-target="demand-list-screen"> <i class="icon">📋</i> Ver Chamados</button></li>
+                     <li><button class="nav-btn" data-target="demand-register-screen"> <i class="icon">📝</i> Registrar Demanda</button></li>
+                     <li><button class="nav-btn" data-target="history-screen"> <i class="icon">📜</i> Histórico Manutenção</button></li>
+                     <li><button class="nav-btn" data-target="chat-screen"> <i class="icon">💬</i> Chat Suporte</button></li>
+                     <li><button class="nav-btn" data-target="stock-screen"> <i class="icon">📦</i> Gestão de Estoque</button></li>
+                     <li><button class="nav-btn" data-target="environments-screen"> <i class="icon">🏢</i> Cadastro Ambientes</button></li>
+                     <li><button id="logout-btn" class="nav-btn"> <i class="icon">🚪</i> Sair</button></li>
+                 </ul>
+            </nav>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <h3>Menu Principal</h3>
-      </div>
-      <ul class="menu">
-        <li data-section="home" class="active">
-          <i class="fas fa-home"></i> Home
-        </li>
-        <li data-section="registro">
-          <i class="fas fa-clipboard-list"></i> Registro de Demanda
-        </li>
-        <li data-section="historico">
-          <i class="fas fa-history"></i> Histórico de Manutenção
-        </li>
-        <li data-section="chat">
-          <i class="fas fa-comments"></i> Chat Suporte
-          <span class="badge">2</span>
-        </li>
-        <li data-section="estoque">
-          <i class="fas fa-boxes"></i> Gestão de Estoque
-        </li>
-        <li data-section="ambientes">
-          <i class="fas fa-building"></i> Cadastro de Ambientes
-        </li>
-        <li id="logout">
-          <i class="fas fa-sign-out-alt"></i> Logout
-        </li>
-      </ul>
-      <div class="sidebar-footer">
-        <p>© 2025 SENAI Blumenau</p>
-        <p>v1.0.0</p>
-      </div>
-    </div>
+            <main class="main-content">
 
-    <!-- Conteúdo Principal -->
-    <div class="main" id="main">
-      <!-- Home -->
-      <div id="home" class="section active">
-        <div class="section-header">
-          <h1><i class="fas fa-home"></i> Dashboard</h1>
-          <p class="breadcrumb">Home / Dashboard</p>
-        </div>
-        
-        <div class="welcome-banner">
-          <div class="welcome-text">
-            <h2>Bem-vindo ao Sistema Integrado SENAI</h2>
-            <p>Aqui você poderá gerenciar demandas, manutenções e comunicações de forma eficiente.</p>
-            <button class="btn-secondary">Saiba mais</button>
-          </div>
-          <div class="welcome-image">
-            <img src="/api/placeholder/300/200" alt="Ilustração">
-          </div>
-        </div>
-        
-        <div class="dashboard-cards">
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-tasks"></i>
-            </div>
-            <div class="card-info">
-              <h3>Demandas</h3>
-              <p class="card-value">12</p>
-              <p class="card-change positive">+3 novos hoje</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-tools"></i>
-            </div>
-            <div class="card-info">
-              <h3>Manutenções</h3>
-              <p class="card-value">8</p>
-              <p class="card-change negative">-2 concluídas</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-            <div class="card-info">
-              <h3>Agendamentos</h3>
-              <p class="card-value">5</p>
-              <p class="card-change neutral">0 novos</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-cube"></i>
-            </div>
-            <div class="card-info">
-              <h3>Estoque</h3>
-              <p class="card-value">85</p>
-              <p class="card-change negative">-3 itens</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-6">
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Demandas Recentes</h3>
-                <div class="panel-actions">
-                  <button class="btn-icon"><i class="fas fa-sync-alt"></i></button>
-                  <button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button>
-                </div>
-              </div>
-              <div class="panel-body">
-                <ul class="activity-list">
-                  <li class="activity-item">
-                    <div class="activity-icon high">
-                      <i class="fas fa-exclamation-circle"></i>
+                <div id="dashboard-screen" class="content-section active">
+                     <h2>Dashboard Principal</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>Alertas</h3>
+                            <ul id="dashboard-alerts">
+                                <li>Carregando alertas...</li>
+                            </ul>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Atividades Recentes</h3>
+                             <ul id="dashboard-recent-activities">
+                                 <li>Carregando atividades...</li>
+                             </ul>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Status dos Chamados</h3>
+                            <p id="dashboard-demand-status">Abertos: 0 | Em Andamento: 0 | Concluídos: 0</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Chamados Abertos/Andamento</h3>
+                            <ul id="dashboard-open-demands">
+                                <li>Nenhum chamado aberto.</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="activity-content">
-                      <h4>Manutenção do Ar Condicionado</h4>
-                      <p>Laboratório de Informática - Prioridade Alta</p>
-                      <span class="activity-time">2 horas atrás</span>
-                    </div>
-                  </li>
-                  <li class="activity-item">
-                    <div class="activity-icon medium">
-                      <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="activity-content">
-                      <h4>Troca de Lâmpadas</h4>
-                      <p>Sala 201 - Prioridade Média</p>
-                      <span class="activity-time">5 horas atrás</span>
-                    </div>
-                  </li>
-                  <li class="activity-item">
-                    <div class="activity-icon low">
-                      <i class="fas fa-info-circle"></i>
-                    </div>
-                    <div class="activity-content">
-                      <h4>Atualização de Software</h4>
-                      <p>Laboratório de Robótica - Prioridade Baixa</p>
-                      <span class="activity-time">1 dia atrás</span>
-                    </div>
-                  </li>
-                </ul>
-                <div class="panel-footer">
-                  <button class="btn-text">Ver todas</button>
                 </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-6">
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Estatísticas do Mês</h3>
-                <div class="panel-actions">
-                  <select id="monthSelect" class="form-select">
-                    <option value="abril">Abril</option>
-                    <option value="marco">Março</option>
-                    <option value="fevereiro">Fevereiro</option>
-                  </select>
-                </div>
-              </div>
-              <div class="panel-body chart-container">
-                <div class="chart-placeholder">
-                  <img src="/api/placeholder/400/200" alt="Gráfico de estatísticas">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Registro de Demanda -->
-      <div id="registro" class="section">
-        <div class="section-header">
-          <h1><i class="fas fa-clipboard-list"></i> Registro de Demanda</h1>
-          <p class="breadcrumb">Home / Registro de Demanda</p>
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Nova Demanda</h3>
-          </div>
-          <div class="panel-body">
-            <form id="registroForm">
-              <div class="form-row">
-                <div class="form-group col-6">
-                  <label for="tipoServico">Tipo de Serviço</label>
-                  <select id="tipoServico" class="form-select">
-                    <option value="">Selecione</option>
-                    <option value="manutencao">Manutenção</option>
-                    <option value="instalacao">Instalação</option>
-                    <option value="suporte">Suporte</option>
-                    <option value="outro">Outro</option>
-                  </select>
-                </div>
-                <div class="form-group col-6">
-                  <label for="ambiente">Ambiente/Sala</label>
-                  <select id="ambiente" class="form-select">
-                    <option value="">Selecione</option>
-                    <option value="lab1">Laboratório de Informática 1</option>
-                    <option value="lab2">Laboratório de Informática 2</option>
-                    <option value="lab3">Laboratório de Robótica</option>
-                    <option value="sala201">Sala 201</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="descricao">Descrição da Demanda</label>
-                <textarea id="descricao" rows="4" class="form-input" placeholder="Descreva o problema ou solicitação detalhadamente"></textarea>
-              </div>
-              
-              <div class="form-row">
-                <div class="form-group col-4">
-                  <label for="prioridade">Prioridade</label>
-                  <select id="prioridade" class="form-select">
-                    <option value="baixa">Baixa</option>
-                    <option value="media" selected>Média</option>
-                    <option value="alta">Alta</option>
-                  </select>
-                </div>
-                <div class="form-group col-4">
-                  <label for="data">Data</label>
-                  <input type="date" id="data" class="form-input">
-                </div>
-                <div class="form-group col-4">
-                  <label for="solicitante">Solicitante</label>
-                  <input type="text" id="solicitante" class="form-input" placeholder="Seu nome">
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label>Tarefas Preliminares</label>
-                <div class="checkbox-group">
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="tarefa1">
-                    <span class="checkmark"></span>
-                    Verificação inicial realizada
-                  </label>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="tarefa2">
-                    <span class="checkmark"></span>
-                    Documentação preparada
-                  </label>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="tarefa3">
-                    <span class="checkmark"></span>
-                    Comunicado aos envolvidos
-                  </label>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="anexo">Anexar Arquivo</label>
-                <div class="file-input-container">
-                  <input type="file" id="anexo" class="file-input">
-                  <label for="anexo" class="file-label">
-                    <i class="fas fa-cloud-upload-alt"></i> Escolher Arquivo
-                  </label>
-                  <span id="file-name" class="file-name">Nenhum arquivo selecionado</span>
-                </div>
-              </div>
-              
-              <div class="form-actions">
-                <button type="button" class="btn-secondary">Cancelar</button>
-                <button type="submit" class="btn-primary">Registrar Demanda</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <div id="registroResult" class="notification hidden">
-          <!-- Conteúdo será adicionado via JavaScript -->
-        </div>
-      </div>
-      
-      <!-- Histórico de Manutenção -->
-      <div id="historico" class="section">
-        <div class="section-header">
-          <h1><i class="fas fa-history"></i> Histórico de Manutenção</h1>
-          <p class="breadcrumb">Home / Histórico de Manutenção</p>
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Filtros</h3>
-          </div>
-          <div class="panel-body">
-            <div class="form-row">
-              <div class="form-group col-3">
-                <label for="filtroData">Data</label>
-                <input type="date" id="filtroData" class="form-input">
-              </div>
-              <div class="form-group col-3">
-                <label for="filtroTecnico">Técnico</label>
-                <select id="filtroTecnico" class="form-select">
-                  <option value="">Todos</option>
-                  <option value="tecnico1">Técnico 1</option>
-                  <option value="tecnico2">Técnico 2</option>
-                </select>
-              </div>
-              <div class="form-group col-3">
-                <label for="filtroStatus">Status</label>
-                <select id="filtroStatus" class="form-select">
-                  <option value="">Todos</option>
-                  <option value="pendente">Pendente</option>
-                  <option value="emandamento">Em Andamento</option>
-                  <option value="concluido">Concluído</option>
-                </select>
-              </div>
-              <div class="form-group col-3">
-                <label>&nbsp;</label>
-                <button id="btnFiltrar" class="btn-primary full-width">Filtrar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Registros de Manutenção</h3>
-            <div class="panel-actions">
-              <button class="btn-icon"><i class="fas fa-download"></i></button>
-              <button class="btn-icon"><i class="fas fa-print"></i></button>
-            </div>
-          </div>
-          <div class="panel-body">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th><i class="fas fa-calendar"></i> Data</th>
-                    <th><i class="fas fa-user-cog"></i> Técnico</th>
-                    <th><i class="fas fa-clipboard-list"></i> Descrição</th>
-                    <th><i class="fas fa-map-marker-alt"></i> Local</th>
-                    <th><i class="fas fa-flag"></i> Status</th>
-                    <th><i class="fas fa-cog"></i> Ações</th>
-                  </tr>
-                </thead>
-                <tbody id="historicoTable">
-                  <!-- Registros serão adicionados aqui via JavaScript -->
-                  <tr>
-                    <td>01/04/2025</td>
-                    <td>Técnico 1</td>
-                    <td>Manutenção do Ar Condicionado</td>
-                    <td>Laboratório de Informática</td>
-                    <td><span class="badge-status concluido">Concluído</span></td>
-                    <td>
-                      <button class="btn-icon small"><i class="fas fa-eye"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>28/03/2025</td>
-                    <td>Técnico 2</td>
-                    <td>Troca de Lâmpadas</td>
-                    <td>Sala 201</td>
-                    <td><span class="badge-status emandamento">Em Andamento</span></td>
-                    <td>
-                      <button class="btn-icon small"><i class="fas fa-eye"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="pagination">
-              <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
-              <button class="page-btn active">1</button>
-              <button class="page-btn">2</button>
-              <button class="page-btn">3</button>
-              <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Chat Suporte -->
-      <div id="chat" class="section">
-        <div class="section-header">
-          <h1><i class="fas fa-comments"></i> Chat Suporte</h1>
-          <p class="breadcrumb">Home / Chat Suporte</p>
-        </div>
-        
-        <div class="chat-container">
-          <div class="chat-sidebar">
-            <div class="search-box">
-              <input type="text" placeholder="Buscar conversas...">
-              <i class="fas fa-search"></i>
-            </div>
-            <ul class="chat-contacts">
-              <li class="chat-contact active">
-                <div class="contact-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                  <span class="status online"></span>
-                </div>
-                <div class="contact-info">
-                  <h4>Suporte Técnico</h4>
-                  <p>Como posso ajudar?</p>
-                </div>
-                <div class="contact-meta">
-                  <span class="time">Agora</span>
-                  <span class="badge">2</span>
-                </div>
-              </li>
-              <li class="chat-contact">
-                <div class="contact-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                  <span class="status offline"></span>
-                </div>
-                <div class="contact-info">
-                  <h4>Equipe Manutenção</h4>
-                  <p>Verificando o problema...</p>
-                </div>
-                <div class="contact-meta">
-                  <span class="time">10:30</span>
-                </div>
-              </li>
-              <li class="chat-contact">
-                <div class="contact-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                  <span class="status away"></span>
-                </div>
-                <div class="contact-info">
-                  <h4>Almoxarifado</h4>
-                  <p>Os itens estão disponíveis</p>
-                </div>
-                <div class="contact-meta">
-                  <span class="time">Ontem</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          
-          <div class="chat-main">
-            <div class="chat-header">
-              <div class="chat-user">
-                <div class="contact-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                  <span class="status online"></span>
-                </div>
-                <div class="contact-info">
-                  <h4>Suporte Técnico</h4>
-                  <p>Online - Respondendo em 5 min</p>
-                </div>
-              </div>
-              <div class="chat-actions">
-                <button class="btn-icon"><i class="fas fa-phone"></i></button>
-                <button class="btn-icon"><i class="fas fa-video"></i></button>
-                <button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button>
-              </div>
-            </div>
-            
-            <div class="chat-box" id="chatBox">
-              <div class="chat-day">Hoje</div>
-              
-              <div class="message received">
-                <div class="message-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                </div>
-                <div class="message-content">
-                  <div class="message-text">
-                    <p>Olá! Como posso ajudar você hoje?</p>
-                  </div>
-                  <div class="message-time">10:00</div>
-                </div>
-              </div>
-              
-              <div class="message sent">
-                <div class="message-content">
-                  <div class="message-text">
-                    <p>Olá, estou com um problema no ar-condicionado da sala 201.</p>
-                  </div>
-                  <div class="message-time">10:05</div>
-                </div>
-              </div>
-              
-              <div class="message received">
-                <div class="message-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                </div>
-                <div class="message-content">
-                  <div class="message-text">
-                    <p>Entendo. Pode descrever o problema com mais detalhes?</p>
-                  </div>
-                  <div class="message-time">10:07</div>
-                </div>
-              </div>
-              
-              <div class="message received">
-                <div class="message-avatar">
-                  <img src="/api/placeholder/40/40" alt="Avatar">
-                </div>
-                <div class="message-content">
-                  <div class="message-text">
-                    <p>Já verificou se há água saindo pela unidade interna? Isso pode indicar um problema de drenagem.</p>
-                  </div>
-                  <div class="message-time">10:08</div>
-                </div>
-              </div>
-              
-              <!-- Mensagens serão adicionados aqui via JavaScript -->
-            </div>
-            
-            <div class="chat-footer">
-              <button class="chat-action"><i class="fas fa-paperclip"></i></button>
-              <div class="chat-input-container">
-                <input type="text" id="chatMessage" placeholder="Digite sua mensagem...">
-                <button class="chat-action emoji"><i class="fas fa-smile"></i></button>
-              </div>
-              <button id="sendChat" class="chat-send">
-                <i class="fas fa-paper-plane"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Gestão de Estoque -->
-      <div id="estoque" class="section">
-        <div class="section-header">
-          <h1><i class="fas fa-boxes"></i> Gestão de Estoque</h1>
-          <p class="breadcrumb">Home / Gestão de Estoque</p>
-        </div>
-        
-        <div class="dashboard-cards">
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-laptop"></i>
-            </div>
-            <div class="card-info">
-              <h3>Computadores</h3>
-              <p class="card-value">10</p>
-              <p class="card-change neutral">unidades</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-keyboard"></i>
-            </div>
-            <div class="card-info">
-              <h3>Periféricos</h3>
-              <p class="card-value">25</p>
-              <p class="card-change positive">+5 esta semana</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-microchip"></i>
-            </div>
-            <div class="card-info">
-              <h3>Componentes</h3>
-              <p class="card-value">50</p>
-              <p class="card-change negative">-3 esta semana</p>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">
-              <i class="fas fa-tools"></i>
-            </div>
-            <div class="card-info">
-              <h3>Ferramentas</h3>
-              <p class="card-value">15</p>
-              <p class="card-change neutral">0 mudanças</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Inventário de Estoque</h3>
-            <div class="panel-actions">
-              <button class="btn-primary"><i class="fas fa-plus"></i> Novo Item</button>
-            </div>
-          </div>
-          <div class="panel-body">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Item</th>
-                    <th>Categoria</th>
-                    <th>Quantidade</th>
-                    <th>Status</th>
-                    <th>Última Atualização</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody id="estoqueTable">
-                  <tr>
-                    <td>#001</td>
-                    <td>Computador Desktop Dell</td>
-                    <td>Computadores</td>
-                    <td>10</td>
-                    <td><span class="badge-status normal">Normal</span></td>
-                    <td>01/04/2025</td>
-                    <td>
-                      <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-minus"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-plus"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#002</td>
-                    <td>Mouse Óptico Logitech</td>
-                    <td>Periféricos</td>
-                    <td>15</td>
-                    <td><span class="badge-status normal">Normal</span></td>
-                    <td>30/03/2025</td>
-                    <td>
-                      <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-minus"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-plus"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#003</td>
-                    <td>Teclado USB ABNT2</td>
-                    <td>Periféricos</td>
-                    <td>10</td>
-                    <td><span class="badge-status normal">Normal</span></td>
-                    <td>29/03/2025</td>
-                    <td>
-                      <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-minus"></i></button>
-                      <button class="btn-icon small"><i class="fas fa-plus"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#004</td>
-                    <td>Memória RAM DDR4 8GB</td>
-                    <td>Compon
-                        <tr>
-                            <td>#004</td>
-                            <td>Memória RAM DDR4 8GB</td>
-                            <td>Componentes</td>
-                            <td>20</td>
-                            <td><span class="badge-status baixo">Baixo</span></td>
-                            <td>28/03/2025</td>
-                            <td>
-                              <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                              <button class="btn-icon small"><i class="fas fa-minus"></i></button>
-                              <button class="btn-icon small"><i class="fas fa-plus"></i></button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>#005</td>
-                            <td>SSD 240GB</td>
-                            <td>Componentes</td>
-                            <td>5</td>
-                            <td><span class="badge-status critico">Crítico</span></td>
-                            <td>27/03/2025</td>
-                            <td>
-                              <button class="btn-icon small"><i class="fas fa-edit"></i></button>
-                              <button class="btn-icon small"><i class="fas fa-minus"></i></button>
-                              <button class="btn-icon small"><i class="fas fa-plus"></i></button>
-                            </td>
-                          </tr>
+
+                <div id="demand-list-screen" class="content-section">
+                    <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                    <h2>Lista de Chamados Registrados</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descrição</th>
+                                <th>Prioridade</th>
+                                <th>Data Solic.</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="demand-list-table-body">
                         </tbody>
-                      </table>
-                    </div>
-                    <div class="pagination">
-                      <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
-                      <button class="page-btn active">1</button>
-                      <button class="page-btn">2</button>
-                      <button class="page-btn">3</button>
-                      <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                  </div>
+                    </table>
+                     <div id="demand-details-section" style="margin-top: 20px; padding: 15px; border: 1px solid #eee; display: none;">
+                         <h3>Detalhes do Chamado #<span id="details-demand-id"></span></h3>
+                         <p><strong>Descrição:</strong> <span id="details-demand-description"></span></p>
+                         <p><strong>Prioridade:</strong> <span id="details-demand-priority"></span></p>
+                         <p><strong>Status Atual:</strong> <span id="details-demand-status"></span></p>
+                         <div class="form-group">
+                             <label for="demand-actions-performed">Ações Realizadas:</label>
+                             <textarea id="demand-actions-performed" rows="3" placeholder="Descreva o que foi feito para resolver o chamado..."></textarea>
+                         </div>
+                         <button id="complete-demand-btn" class="btn btn-primary">Marcar como Concluído</button>
+                         <button id="start-demand-btn" class="btn btn-secondary">Iniciar Atendimento</button>
+                     </div>
                 </div>
-                
-                <div class="row">
-                  <div class="col-6">
-                    <div class="panel">
-                      <div class="panel-header">
-                        <h3>Movimentações Recentes</h3>
-                      </div>
-                      <div class="panel-body">
-                        <ul class="activity-list">
-                          <li class="activity-item">
-                            <div class="activity-icon entrada">
-                              <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div class="activity-content">
-                              <h4>Entrada de Periféricos</h4>
-                              <p>5 mouses e 5 teclados</p>
-                              <span class="activity-time">Hoje, 09:45</span>
-                            </div>
-                          </li>
-                          <li class="activity-item">
-                            <div class="activity-icon saida">
-                              <i class="fas fa-arrow-up"></i>
-                            </div>
-                            <div class="activity-content">
-                              <h4>Saída de Componentes</h4>
-                              <p>3 memórias RAM para manutenção</p>
-                              <span class="activity-time">Ontem, 15:30</span>
-                            </div>
-                          </li>
-                          <li class="activity-item">
-                            <div class="activity-icon entrada">
-                              <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div class="activity-content">
-                              <h4>Entrada de Ferramentas</h4>
-                              <p>Kit de ferramentas para manutenção</p>
-                              <span class="activity-time">28/03/2025, 10:15</span>
-                            </div>
-                          </li>
-                        </ul>
-                        <div class="panel-footer">
-                          <button class="btn-text">Ver histórico completo</button>
+
+                <div id="demand-register-screen" class="content-section">
+                    <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                    <h2>Registro de Demanda</h2>
+                    <form id="demand-form">
+                         <div class="form-group">
+                            <label for="demand-description">Descrição Detalhada:</label>
+                            <textarea id="demand-description" name="description" rows="4" required></textarea>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="panel">
-                      <div class="panel-header">
-                        <h3>Status de Inventário</h3>
-                      </div>
-                      <div class="panel-body chart-container">
-                        <div class="chart-placeholder">
-                          <img src="/api/placeholder/400/200" alt="Gráfico de inventário">
-                        </div>
-                        <div class="chart-legend">
-                          <div class="legend-item">
-                            <span class="legend-color" style="background-color: #4CAF50;"></span>
-                            <span class="legend-text">Normal (60%)</span>
-                          </div>
-                          <div class="legend-item">
-                            <span class="legend-color" style="background-color: #FFC107;"></span>
-                            <span class="legend-text">Baixo (25%)</span>
-                          </div>
-                          <div class="legend-item">
-                            <span class="legend-color" style="background-color: #F44336;"></span>
-                            <span class="legend-text">Crítico (15%)</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Cadastro de Ambientes -->
-              <div id="ambientes" class="section">
-                <div class="section-header">
-                  <h1><i class="fas fa-building"></i> Cadastro de Ambientes</h1>
-                  <p class="breadcrumb">Home / Cadastro de Ambientes</p>
-                </div>
-                
-                <div class="row">
-                  <div class="col-4">
-                    <div class="panel">
-                      <div class="panel-header">
-                        <h3>Novo Ambiente</h3>
-                      </div>
-                      <div class="panel-body">
-                        <form id="ambientesForm">
-                          <div class="form-group">
-                            <label for="nomeAmbiente">Nome do Ambiente/Setor</label>
-                            <input type="text" id="nomeAmbiente" class="form-input" placeholder="Ex: Laboratório de TI">
-                          </div>
-                          <div class="form-group">
-                            <label for="tipoAmbiente">Tipo de Ambiente</label>
-                            <select id="tipoAmbiente" class="form-select">
-                              <option value="">Selecione</option>
-                              <option value="laboratorio">Laboratório</option>
-                              <option value="sala">Sala de Aula</option>
-                              <option value="escritorio">Escritório</option>
-                              <option value="oficina">Oficina</option>
-                              <option value="outro">Outro</option>
+                        <div class="form-group">
+                            <label for="demand-priority">Prioridade:</label>
+                            <select id="demand-priority" name="priority" required>
+                                <option value="Baixa">Baixa</option>
+                                <option value="Média">Média</option>
+                                <option value="Alta">Alta</option>
                             </select>
-                          </div>
-                          <div class="form-group">
-                            <label for="localizacao">Localização</label>
-                            <input type="text" id="localizacao" class="form-input" placeholder="Ex: Prédio A, Piso 2">
-                          </div>
-                          <div class="form-group">
-                            <label for="capacidade">Capacidade</label>
-                            <input type="number" id="capacidade" class="form-input" placeholder="Número de pessoas">
-                          </div>
-                          <div class="form-group">
-                            <label for="responsavel">Responsável</label>
-                            <input type="text" id="responsavel" class="form-input" placeholder="Nome do responsável">
-                          </div>
-                          <div class="form-group">
-                            <label for="equipamentos">Equipamentos Disponíveis</label>
-                            <textarea id="equipamentos" class="form-input" rows="3" placeholder="Ex: Computadores, Impressoras"></textarea>
-                          </div>
-                          <div class="form-group">
-                            <label for="observacoes">Observações</label>
-                            <textarea id="observacoes" class="form-input" rows="3" placeholder="Informações adicionais"></textarea>
-                          </div>
-                          <div class="form-actions">
-                            <button type="reset" class="btn-secondary">Limpar</button>
-                            <button type="submit" class="btn-primary">Cadastrar</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="col-8">
-                    <div class="panel">
-                      <div class="panel-header">
-                        <h3>Ambientes Cadastrados</h3>
-                        <div class="panel-actions">
-                          <div class="search-box small">
-                            <input type="text" placeholder="Buscar ambiente...">
-                            <i class="fas fa-search"></i>
-                          </div>
                         </div>
-                      </div>
-                      <div class="panel-body">
-                        <div class="environment-cards" id="ambientesList">
-                          <div class="environment-card">
-                            <div class="environment-icon">
-                              <i class="fas fa-laptop"></i>
-                            </div>
-                            <div class="environment-header">
-                              <h3>Laboratório de Informática 1</h3>
-                              <span class="badge-env disponivel">Disponível</span>
-                            </div>
-                            <div class="environment-info">
-                              <p><i class="fas fa-map-marker-alt"></i> Prédio A, Piso 1</p>
-                              <p><i class="fas fa-users"></i> Capacidade: 30 pessoas</p>
-                              <p><i class="fas fa-user-tie"></i> Resp.: João Silva</p>
-                            </div>
-                            <div class="environment-equipment">
-                              <h4>Equipamentos:</h4>
-                              <p>30 Computadores, 1 Projetor, 1 Impressora</p>
-                            </div>
-                            <div class="environment-actions">
-                              <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                              <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                              <button class="btn-icon"><i class="fas fa-trash-alt"></i></button>
-                            </div>
-                          </div>
-                          
-                          <div class="environment-card">
-                            <div class="environment-icon">
-                              <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="environment-header">
-                              <h3>Laboratório de Robótica</h3>
-                              <span class="badge-env ocupado">Ocupado</span>
-                            </div>
-                            <div class="environment-info">
-                              <p><i class="fas fa-map-marker-alt"></i> Prédio B, Piso 2</p>
-                              <p><i class="fas fa-users"></i> Capacidade: 20 pessoas</p>
-                              <p><i class="fas fa-user-tie"></i> Resp.: Maria Oliveira</p>
-                            </div>
-                            <div class="environment-equipment">
-                              <h4>Equipamentos:</h4>
-                              <p>10 Kits de Robótica, 5 Computadores, 1 Impressora 3D</p>
-                            </div>
-                            <div class="environment-actions">
-                              <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                              <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                              <button class="btn-icon"><i class="fas fa-trash-alt"></i></button>
-                            </div>
-                          </div>
-                          
-                          <div class="environment-card">
-                            <div class="environment-icon">
-                              <i class="fas fa-chalkboard"></i>
-                            </div>
-                            <div class="environment-header">
-                              <h3>Sala 201</h3>
-                              <span class="badge-env manutencao">Em Manutenção</span>
-                            </div>
-                            <div class="environment-info">
-                              <p><i class="fas fa-map-marker-alt"></i> Prédio A, Piso 2</p>
-                              <p><i class="fas fa-users"></i> Capacidade: 35 pessoas</p>
-                              <p><i class="fas fa-user-tie"></i> Resp.: Carlos Santos</p>
-                            </div>
-                            <div class="environment-equipment">
-                              <h4>Equipamentos:</h4>
-                              <p>1 Projetor, 1 Computador, 35 Carteiras</p>
-                            </div>
-                            <div class="environment-actions">
-                              <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                              <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                              <button class="btn-icon"><i class="fas fa-trash-alt"></i></button>
-                            </div>
-                          </div>
+                         <div class="form-group">
+                            <label for="demand-date">Data da Solicitação:</label>
+                            <input type="date" id="demand-date" name="request_date" value="" required readonly>
                         </div>
-                        
-                        <div id="ambientesResult" class="notification hidden">
-                          <!-- Conteúdo será adicionado via JavaScript -->
+                         <div class="form-group">
+                            <label for="demand-due-date">Previsão de Conclusão:</label>
+                            <input type="date" id="demand-due-date" name="due_date">
                         </div>
-                      </div>
-                    </div>
-                  </div>
+                        <div class="form-group">
+                            <label for="demand-attachments">Anexar Arquivos:</label>
+                            <input type="file" id="demand-attachments" name="attachments" multiple>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar Demanda</button>
+                    </form>
                 </div>
-              </div>
-            </div>
-          </div>
-        
-          <script src="script.js"></script>
-        </body>
-        </html>
+
+                <div id="history-screen" class="content-section">
+                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                    <h2>Histórico de Manutenção</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data Conclusão</th>
+                                <th>Técnico</th>
+                                <th>Demanda Original (ID)</th>
+                                <th>Descrição do Serviço Realizado</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="chat-screen" class="content-section">
+                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                     <h2>Chat Suporte</h2>
+                      <div class="chat-container">
+                            <div class="chat-list">
+                                <h4>Conversas</h4>
+                                <button class="chat-item active">Cliente X (Demanda #125)</button>
+                                <button class="chat-item">Técnico Silva</button>
+                                <button class="chat-item">Gestor Ana</button>
+                                <button class="chat-item">Suporte TI Geral</button>
+                            </div>
+                            <div class="chat-window">
+                                <div class="chat-messages">
+                                    <div class="message received">
+                                        <span class="sender">Cliente X:</span>
+                                        <p>Olá, meu monitor está piscando.</p>
+                                        <span class="timestamp">10:30</span>
+                                    </div>
+                                    <div class="message sent">
+                                         <span class="sender">Você (Técnico João):</span>
+                                         <p>Entendido. Estou a caminho para verificar. Previsão de 15 minutos.</p>
+                                         <span class="timestamp">10:31</span>
+                                    </div>
+                                     <div class="message received">
+                                        <span class="sender">Cliente X:</span>
+                                        <p>Ok, obrigado!</p>
+                                        <span class="timestamp">10:32</span>
+                                    </div>
+                                </div>
+                                <div class="chat-input">
+                                    <input type="text" placeholder="Digite sua mensagem...">
+                                    <button class="btn btn-icon" title="Anexar Arquivo">📎</button>
+                                    <button class="btn btn-primary">Enviar</button>
+                                </div>
+                            </div>
+                      </div>
+                       <p style="margin-top: 15px; font-style: italic; color: #888;">(Funcionalidade de chat não implementada neste protótipo)</p>
+                </div>
+
+                <div id="stock-screen" class="content-section">
+                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                    <h2>Gestão de Estoque</h2>
+
+                    <h3>Inventário</h3>
+                     <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantidade</th>
+                                <th>Nível Mínimo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stock-table-body">
+                        </tbody>
+                    </table>
+                     <div class="form-container" style="margin-top:20px;">
+                         <h4>Adicionar Novo Item</h4>
+                         <form id="add-stock-item-form" style="display:flex; gap: 10px; align-items: flex-end;">
+                             <div class="form-group" style="flex-grow: 1;">
+                                 <label for="stock-item-name">Nome:</label>
+                                 <input type="text" id="stock-item-name" required>
+                             </div>
+                             <div class="form-group">
+                                 <label for="stock-item-qty">Qtd:</label>
+                                 <input type="number" id="stock-item-qty" min="0" value="1" required style="width: 70px;">
+                             </div>
+                              <div class="form-group">
+                                 <label for="stock-item-min-qty">Mín:</label>
+                                 <input type="number" id="stock-item-min-qty" min="0" value="1" required style="width: 70px;">
+                             </div>
+                             <button type="submit" class="btn btn-primary">Adicionar</button>
+                         </form>
+                     </div>
+                </div>
+
+                <div id="environments-screen" class="content-section">
+                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                    <h2>Cadastro de Ambientes e Setores</h2>
+                    <div class="form-container">
+                        <h3>Adicionar/Editar Ambiente</h3>
+                        <form id="environment-form">
+                             <input type="hidden" id="env-edit-id">
+                             <div class="form-group">
+                                <label for="env-name">Nome:</label>
+                                <input type="text" id="env-name" name="name" required>
+                            </div>
+                             <div class="form-group">
+                                <label for="env-location">Localização:</label>
+                                <input type="text" id="env-location" name="location">
+                            </div>
+                             <div class="form-group">
+                                <label for="env-equipment">Equipamentos:</label>
+                                <textarea id="env-equipment" name="equipment" rows="3"></textarea>
+                            </div>
+                             <div class="form-group">
+                                <label for="env-responsible">Responsável:</label>
+                                <input type="text" id="env-responsible" name="responsible">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Ambiente</button>
+                            <button type="button" id="cancel-edit-env-btn" class="btn btn-secondary" style="display: none;">Cancelar Edição</button>
+                        </form>
+                    </div>
+
+                    <div class="list-container">
+                        <h3>Ambientes Cadastrados</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Localização</th>
+                                    <th>Responsável</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                             <tbody id="environments-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <div id="notification-area" class="notification"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
