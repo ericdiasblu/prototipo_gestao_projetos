@@ -11,29 +11,35 @@
     <div id="app-container">
 
         <div id="login-screen" class="screen active">
-            <div class="login-container">
-                <h2>
-                    <span class="logo-placeholder">SENAI Blumenau</span>
-                    <br> Plataforma Integrada
-                </h2>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="username">Usuário/E-mail:</label>
-                        <input type="text" id="username" name="username" value="admin" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Senha:</label>
-                        <input type="password" id="password" name="password" value="password" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Entrar</button>
-                        <a href="#" class="forgot-password">Esqueci minha senha</a>
-                    </div>
-                </form>
-            </div>
+            <!-- ... (código do login screen inalterado) ... -->
+             <div class="login-container">
+                 <h2>
+                     <span class="logo-placeholder">SENAI Blumenau</span>
+                     <br> Plataforma Integrada
+                 </h2>
+                 <form id="login-form">
+                     <div class="form-group">
+                         <label for="username">Usuário/E-mail:</label>
+                         <input type="text" id="username" name="username" value="admin" required>
+                     </div>
+                     <div class="form-group">
+                         <label for="password">Senha:</label>
+                         <input type="password" id="password" name="password" value="password" required>
+                     </div>
+                     <div class="form-actions">
+                         <button type="submit" class="btn btn-primary">Entrar</button>
+                         <a href="#" class="forgot-password">Esqueci minha senha</a>
+                     </div>
+                 </form>
+                 <!-- Link temporário para testar a tela de falha -->
+                 <div style="margin-top: 15px;">
+                    <a href="#fault-report" id="test-fault-report-link">Testar Tela de Relatório de Falha</a>
+                 </div>
+             </div>
         </div>
 
         <div id="main-app" class="screen">
+            <!-- ... (sidebar e outras content-sections inalteradas) ... -->
             <nav class="sidebar">
                  <h3>Menu</h3>
                  <ul>
@@ -49,192 +55,193 @@
             </nav>
 
             <main class="main-content">
-
-                <div id="dashboard-screen" class="content-section active">
-                     <h2>Dashboard Principal</h2>
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card">
-                            <h3>Alertas</h3>
-                            <ul id="dashboard-alerts">
-                                <li>Carregando alertas...</li>
-                            </ul>
-                        </div>
-                        <div class="dashboard-card">
-                            <h3>Atividades Recentes</h3>
-                             <ul id="dashboard-recent-activities">
-                                 <li>Carregando atividades...</li>
+                <!-- ... (dashboard, demand-list, demand-register, history, chat, stock inalterados) ... -->
+                 <div id="dashboard-screen" class="content-section active">
+                      <h2>Dashboard Principal</h2>
+                     <div class="dashboard-grid">
+                         <div class="dashboard-card">
+                             <h3>Alertas</h3>
+                             <ul id="dashboard-alerts">
+                                 <li>Carregando alertas...</li>
                              </ul>
-                        </div>
-                        <div class="dashboard-card">
-                            <h3>Status dos Chamados</h3>
-                            <p id="dashboard-demand-status">Abertos: 0 | Em Andamento: 0 | Concluídos: 0</p>
-                        </div>
-                        <div class="dashboard-card">
-                            <h3>Chamados Abertos/Andamento</h3>
-                            <ul id="dashboard-open-demands">
-                                <li>Nenhum chamado aberto.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="demand-list-screen" class="content-section">
-                    <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
-                    <h2>Lista de Chamados Registrados</h2>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Descrição</th>
-                                <th>Prioridade</th>
-                                <th>Data Solic.</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="demand-list-table-body">
-                        </tbody>
-                    </table>
-                     <div id="demand-details-section" style="margin-top: 20px; padding: 15px; border: 1px solid #eee; display: none;">
-                         <h3>Detalhes do Chamado #<span id="details-demand-id"></span></h3>
-                         <p><strong>Descrição:</strong> <span id="details-demand-description"></span></p>
-                         <p><strong>Prioridade:</strong> <span id="details-demand-priority"></span></p>
-                         <p><strong>Status Atual:</strong> <span id="details-demand-status"></span></p>
-                         <div class="form-group">
-                             <label for="demand-actions-performed">Ações Realizadas:</label>
-                             <textarea id="demand-actions-performed" rows="3" placeholder="Descreva o que foi feito para resolver o chamado..."></textarea>
                          </div>
-                         <button id="complete-demand-btn" class="btn btn-primary">Marcar como Concluído</button>
-                         <button id="start-demand-btn" class="btn btn-secondary">Iniciar Atendimento</button>
+                         <div class="dashboard-card">
+                             <h3>Atividades Recentes</h3>
+                              <ul id="dashboard-recent-activities">
+                                  <li>Carregando atividades...</li>
+                              </ul>
+                         </div>
+                         <div class="dashboard-card">
+                             <h3>Status dos Chamados</h3>
+                             <p id="dashboard-demand-status">Abertos: 0 | Em Andamento: 0 | Concluídos: 0</p>
+                         </div>
+                         <div class="dashboard-card">
+                             <h3>Chamados Abertos/Andamento</h3>
+                             <ul id="dashboard-open-demands">
+                                 <li>Nenhum chamado aberto.</li>
+                             </ul>
+                         </div>
                      </div>
-                </div>
+                 </div>
 
-                <div id="demand-register-screen" class="content-section">
-                    <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
-                    <h2>Registro de Demanda</h2>
-                    <form id="demand-form">
-                         <div class="form-group">
-                            <label for="demand-description">Descrição Detalhada:</label>
-                            <textarea id="demand-description" name="description" rows="4" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="demand-priority">Prioridade:</label>
-                            <select id="demand-priority" name="priority" required>
-                                <option value="Baixa">Baixa</option>
-                                <option value="Média">Média</option>
-                                <option value="Alta">Alta</option>
-                            </select>
-                        </div>
-                         <div class="form-group">
-                            <label for="demand-date">Data da Solicitação:</label>
-                            <input type="date" id="demand-date" name="request_date" value="" required readonly>
-                        </div>
-                         <div class="form-group">
-                            <label for="demand-due-date">Previsão de Conclusão:</label>
-                            <input type="date" id="demand-due-date" name="due_date">
-                        </div>
-                        <div class="form-group">
-                            <label for="demand-attachments">Anexar Arquivos:</label>
-                            <input type="file" id="demand-attachments" name="attachments" multiple>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registrar Demanda</button>
-                    </form>
-                </div>
-
-                <div id="history-screen" class="content-section">
+                 <div id="demand-list-screen" class="content-section">
                      <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
-                    <h2>Histórico de Manutenção</h2>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Data Conclusão</th>
-                                <th>Técnico</th>
-                                <th>Demanda Original (ID)</th>
-                                <th>Descrição do Serviço Realizado</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                        </tbody>
-                    </table>
-                </div>
-
-                <div id="chat-screen" class="content-section">
-                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
-                     <h2>Chat Suporte</h2>
-                      <div class="chat-container">
-                            <div class="chat-list">
-                                <h4>Conversas</h4>
-                                <button class="chat-item active">Cliente X (Demanda #125)</button>
-                                <button class="chat-item">Técnico Silva</button>
-                                <button class="chat-item">Gestor Ana</button>
-                                <button class="chat-item">Suporte TI Geral</button>
-                            </div>
-                            <div class="chat-window">
-                                <div class="chat-messages">
-                                    <div class="message received">
-                                        <span class="sender">Cliente X:</span>
-                                        <p>Olá, meu monitor está piscando.</p>
-                                        <span class="timestamp">10:30</span>
-                                    </div>
-                                    <div class="message sent">
-                                         <span class="sender">Você (Técnico João):</span>
-                                         <p>Entendido. Estou a caminho para verificar. Previsão de 15 minutos.</p>
-                                         <span class="timestamp">10:31</span>
-                                    </div>
-                                     <div class="message received">
-                                        <span class="sender">Cliente X:</span>
-                                        <p>Ok, obrigado!</p>
-                                        <span class="timestamp">10:32</span>
-                                    </div>
-                                </div>
-                                <div class="chat-input">
-                                    <input type="text" placeholder="Digite sua mensagem...">
-                                    <button class="btn btn-icon" title="Anexar Arquivo">📎</button>
-                                    <button class="btn btn-primary">Enviar</button>
-                                </div>
-                            </div>
-                      </div>
-                       <p style="margin-top: 15px; font-style: italic; color: #888;">(Funcionalidade de chat não implementada neste protótipo)</p>
-                </div>
-
-                <div id="stock-screen" class="content-section">
-                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
-                    <h2>Gestão de Estoque</h2>
-
-                    <h3>Inventário</h3>
+                     <h2>Lista de Chamados Registrados</h2>
                      <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Quantidade</th>
-                                <th>Nível Mínimo</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stock-table-body">
-                        </tbody>
-                    </table>
-                     <div class="form-container" style="margin-top:20px;">
-                         <h4>Adicionar Novo Item</h4>
-                         <form id="add-stock-item-form" style="display:flex; gap: 10px; align-items: flex-end;">
-                             <div class="form-group" style="flex-grow: 1;">
-                                 <label for="stock-item-name">Nome:</label>
-                                 <input type="text" id="stock-item-name" required>
-                             </div>
-                             <div class="form-group">
-                                 <label for="stock-item-qty">Qtd:</label>
-                                 <input type="number" id="stock-item-qty" min="0" value="1" required style="width: 70px;">
-                             </div>
-                              <div class="form-group">
-                                 <label for="stock-item-min-qty">Mín:</label>
-                                 <input type="number" id="stock-item-min-qty" min="0" value="1" required style="width: 70px;">
-                             </div>
-                             <button type="submit" class="btn btn-primary">Adicionar</button>
-                         </form>
-                     </div>
-                </div>
+                         <thead>
+                             <tr>
+                                 <th>ID</th>
+                                 <th>Descrição</th>
+                                 <th>Prioridade</th>
+                                 <th>Data Solic.</th>
+                                 <th>Status</th>
+                                 <th>Ações</th>
+                             </tr>
+                         </thead>
+                         <tbody id="demand-list-table-body">
+                         </tbody>
+                     </table>
+                      <div id="demand-details-section" style="margin-top: 20px; padding: 15px; border: 1px solid #eee; display: none;">
+                          <h3>Detalhes do Chamado #<span id="details-demand-id"></span></h3>
+                          <p><strong>Descrição:</strong> <span id="details-demand-description"></span></p>
+                          <p><strong>Prioridade:</strong> <span id="details-demand-priority"></span></p>
+                          <p><strong>Status Atual:</strong> <span id="details-demand-status"></span></p>
+                          <div class="form-group">
+                              <label for="demand-actions-performed">Ações Realizadas:</label>
+                              <textarea id="demand-actions-performed" rows="3" placeholder="Descreva o que foi feito para resolver o chamado..."></textarea>
+                          </div>
+                          <button id="complete-demand-btn" class="btn btn-primary">Marcar como Concluído</button>
+                          <button id="start-demand-btn" class="btn btn-secondary">Iniciar Atendimento</button>
+                      </div>
+                 </div>
 
+                 <div id="demand-register-screen" class="content-section">
+                     <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                     <h2>Registro de Demanda</h2>
+                     <form id="demand-form">
+                          <div class="form-group">
+                             <label for="demand-description">Descrição Detalhada:</label>
+                             <textarea id="demand-description" name="description" rows="4" required></textarea>
+                         </div>
+                         <div class="form-group">
+                             <label for="demand-priority">Prioridade:</label>
+                             <select id="demand-priority" name="priority" required>
+                                 <option value="Baixa">Baixa</option>
+                                 <option value="Média">Média</option>
+                                 <option value="Alta">Alta</option>
+                             </select>
+                         </div>
+                          <div class="form-group">
+                             <label for="demand-date">Data da Solicitação:</label>
+                             <input type="date" id="demand-date" name="request_date" value="" required readonly>
+                         </div>
+                          <div class="form-group">
+                             <label for="demand-due-date">Previsão de Conclusão:</label>
+                             <input type="date" id="demand-due-date" name="due_date">
+                         </div>
+                         <div class="form-group">
+                             <label for="demand-attachments">Anexar Arquivos:</label>
+                             <input type="file" id="demand-attachments" name="attachments" multiple>
+                         </div>
+                         <button type="submit" class="btn btn-primary">Registrar Demanda</button>
+                     </form>
+                 </div>
+
+                 <div id="history-screen" class="content-section">
+                      <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                     <h2>Histórico de Manutenção</h2>
+                     <table class="data-table">
+                         <thead>
+                             <tr>
+                                 <th>Data Conclusão</th>
+                                 <th>Técnico</th>
+                                 <th>Demanda Original (ID)</th>
+                                 <th>Descrição do Serviço Realizado</th>
+                                 <th>Status</th>
+                             </tr>
+                         </thead>
+                         <tbody id="history-table-body">
+                         </tbody>
+                     </table>
+                 </div>
+
+                 <div id="chat-screen" class="content-section">
+                      <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                      <h2>Chat Suporte</h2>
+                       <div class="chat-container">
+                             <div class="chat-list">
+                                 <h4>Conversas</h4>
+                                 <button class="chat-item active">Cliente X (Demanda #125)</button>
+                                 <button class="chat-item">Técnico Silva</button>
+                                 <button class="chat-item">Gestor Ana</button>
+                                 <button class="chat-item">Suporte TI Geral</button>
+                             </div>
+                             <div class="chat-window">
+                                 <div class="chat-messages">
+                                     <div class="message received">
+                                         <span class="sender">Cliente X:</span>
+                                         <p>Olá, meu monitor está piscando.</p>
+                                         <span class="timestamp">10:30</span>
+                                     </div>
+                                     <div class="message sent">
+                                          <span class="sender">Você (Técnico João):</span>
+                                          <p>Entendido. Estou a caminho para verificar. Previsão de 15 minutos.</p>
+                                          <span class="timestamp">10:31</span>
+                                     </div>
+                                      <div class="message received">
+                                         <span class="sender">Cliente X:</span>
+                                         <p>Ok, obrigado!</p>
+                                         <span class="timestamp">10:32</span>
+                                     </div>
+                                 </div>
+                                 <div class="chat-input">
+                                     <input type="text" placeholder="Digite sua mensagem...">
+                                     <button class="btn btn-icon" title="Anexar Arquivo">📎</button>
+                                     <button class="btn btn-primary">Enviar</button>
+                                 </div>
+                             </div>
+                       </div>
+                        <p style="margin-top: 15px; font-style: italic; color: #888;">(Funcionalidade de chat não implementada neste protótipo)</p>
+                 </div>
+
+                 <div id="stock-screen" class="content-section">
+                      <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
+                     <h2>Gestão de Estoque</h2>
+
+                     <h3>Inventário</h3>
+                      <table class="data-table">
+                         <thead>
+                             <tr>
+                                 <th>Item</th>
+                                 <th>Quantidade</th>
+                                 <th>Nível Mínimo</th>
+                                 <th>Ações</th>
+                             </tr>
+                         </thead>
+                         <tbody id="stock-table-body">
+                         </tbody>
+                     </table>
+                      <div class="form-container" style="margin-top:20px;">
+                          <h4>Adicionar Novo Item</h4>
+                          <form id="add-stock-item-form" style="display:flex; gap: 10px; align-items: flex-end;">
+                              <div class="form-group" style="flex-grow: 1;">
+                                  <label for="stock-item-name">Nome:</label>
+                                  <input type="text" id="stock-item-name" required>
+                              </div>
+                              <div class="form-group">
+                                  <label for="stock-item-qty">Qtd:</label>
+                                  <input type="number" id="stock-item-qty" min="0" value="1" required style="width: 70px;">
+                              </div>
+                               <div class="form-group">
+                                  <label for="stock-item-min-qty">Mín:</label>
+                                  <input type="number" id="stock-item-min-qty" min="0" value="1" required style="width: 70px;">
+                              </div>
+                              <button type="submit" class="btn btn-primary">Adicionar</button>
+                          </form>
+                      </div>
+                 </div>
+
+                <!-- █████████ MODIFICADO █████████ -->
                 <div id="environments-screen" class="content-section">
                      <button class="btn btn-secondary back-to-dashboard" data-target="dashboard-screen">< Voltar</button>
                     <h2>Cadastro de Ambientes e Setores</h2>
@@ -251,13 +258,20 @@
                                 <input type="text" id="env-location" name="location">
                             </div>
                              <div class="form-group">
-                                <label for="env-equipment">Equipamentos:</label>
-                                <textarea id="env-equipment" name="equipment" rows="3"></textarea>
+                                <label for="env-equipment">Equipamentos (um por linha):</label>
+                                <textarea id="env-equipment" name="equipment" rows="3" placeholder="Ex: PC-01 Dell Optiplex, Projetor Epson X39"></textarea>
                             </div>
-                             <div class="form-group">
-                                <label for="env-responsible">Responsável:</label>
-                                <input type="text" id="env-responsible" name="responsible">
+
+                            <!-- Seção de Responsáveis Dinâmica -->
+                            <div class="form-group">
+                                <label>Responsáveis por Horário:</label>
+                                <div id="responsibilities-list">
+                                    <!-- Inputs de responsável serão adicionados aqui pelo JS -->
+                                </div>
+                                <button type="button" id="add-responsibility-btn" class="btn btn-sm btn-secondary" style="margin-top: 5px;">+ Adicionar Responsável</button>
                             </div>
+                            <!-- Fim Seção de Responsáveis -->
+
                             <button type="submit" class="btn btn-primary">Salvar Ambiente</button>
                             <button type="button" id="cancel-edit-env-btn" class="btn btn-secondary" style="display: none;">Cancelar Edição</button>
                         </form>
@@ -270,7 +284,7 @@
                                 <tr>
                                     <th>Nome</th>
                                     <th>Localização</th>
-                                    <th>Responsável</th>
+                                    <th>Responsáveis (Horário/Turno)</th> <!-- Coluna Modificada -->
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -279,9 +293,45 @@
                         </table>
                     </div>
                 </div>
+                <!-- █████████ FIM MODIFICADO █████████ -->
 
             </main>
         </div>
+
+        <!-- █████████ NOVO SCREEN █████████ -->
+        <div id="fault-report-screen" class="screen fault-report-style">
+            <div class="fault-report-container">
+                 <span class="logo-placeholder">SENAI Blumenau</span>
+                <h2>Relatar Equipamento com Falha</h2>
+                <p>Use este formulário para reportar um problema com um equipamento.</p>
+                 <div id="fault-report-feedback" class="notification" style="position: static; display: none; margin-bottom: 15px;"></div>
+                 <form id="fault-report-form">
+                    <div class="form-group">
+                        <label for="fault-environment">Ambiente/Sala:</label>
+                        <select id="fault-environment" name="environment_id" required>
+                            <option value="">Selecione o ambiente...</option>
+                            <!-- Opções populadas pelo JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fault-equipment">Equipamento (Identificação/Nome):</label>
+                        <input type="text" id="fault-equipment" name="equipment_name" placeholder="Ex: Computador da mesa 3, Impressora do corredor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fault-description">Descrição do Problema:</label>
+                        <textarea id="fault-description" name="description" rows="4" placeholder="Descreva o que está acontecendo..." required></textarea>
+                    </div>
+                     <div class="form-group">
+                        <label for="fault-reporter-name">Seu Nome (Opcional):</label>
+                        <input type="text" id="fault-reporter-name" name="reporter_name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar Relatório</button>
+                    <a href="#" id="back-to-login-link" class="forgot-password" style="display: block; margin-top: 10px;">Voltar para Login</a>
+                 </form>
+            </div>
+        </div>
+        <!-- █████████ FIM NOVO SCREEN █████████ -->
+
 
         <div id="notification-area" class="notification"></div>
 
